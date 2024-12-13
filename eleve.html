@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Élève</title>
+    <title>Liste des élèves</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,43 +18,141 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
         }
         h1 {
+            text-align: center;
             color: #333;
         }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4caf50;
-            color: white;
+        .student-list {
+            list-style: none;
+            padding: 0;
+        }
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .student-item a {
             text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+        .student-item a:hover {
+            text-decoration: underline;
+        }
+        .student-item button {
+            background-color: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
             border-radius: 4px;
             cursor: pointer;
         }
-        .back-button:hover {
+        .student-item button:hover {
+            background-color: #e85050;
+        }
+        .add-student {
+            display: flex;
+            margin-top: 20px;
+        }
+        .add-student input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+        .add-student button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .add-student button:hover {
             background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 id="studentName">Nom de l'élève</h1>
-        <a href="index.html" class="back-button">Retour à la liste</a>
+        <h1>Liste des élèves</h1>
+        <ul class="student-list" id="studentList">
+            <!-- Les noms des élèves seront ajoutés ici -->
+        </ul>
+        <div class="add-student">
+            <input type="text" id="studentName" placeholder="Entrez un nom">
+            <button onclick="addStudent()">Ajouter</button>
+        </div>
     </div>
 
     <script>
-        // Récupérer le nom de l'élève depuis l'URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const studentName = urlParams.get('name');
+        // Charger la liste des élèves depuis localStorage
+        function loadStudents() {
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            const studentList = document.getElementById('studentList');
+            studentList.innerHTML = '';
 
-        // Afficher le nom de l'élève dans la page
-        if (studentName) {
-            document.getElementById('studentName').textContent = studentName;
-        } else {
-            document.getElementById('studentName').textContent = "Nom de l'élève inconnu";
+            students.forEach(studentName => {
+                const listItem = createStudentItem(studentName);
+                studentList.appendChild(listItem);
+            });
         }
+
+        // Ajouter un nouvel élève
+        function addStudent() {
+            const studentName = document.getElementById('studentName').value;
+            if (studentName.trim() === '') {
+                alert('Veuillez entrer un nom valide.');
+                return;
+            }
+
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            students.push(studentName);
+            localStorage.setItem('students', JSON.stringify(students));
+
+            const studentList = document.getElementById('studentList');
+            const listItem = createStudentItem(studentName);
+            studentList.appendChild(listItem);
+
+            document.getElementById('studentName').value = '';
+        }
+
+        // Créer un élément de la liste d'élèves
+        function createStudentItem(studentName) {
+            const listItem = document.createElement('li');
+            listItem.className = 'student-item';
+
+            const nameLink = document.createElement('a');
+            nameLink.textContent = studentName;
+            nameLink.href = `eleve.html?name=${encodeURIComponent(studentName)}`;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Supprimer';
+            deleteButton.onclick = function () {
+                deleteStudent(studentName);
+                listItem.remove();
+            };
+
+            listItem.appendChild(nameLink);
+            listItem.appendChild(deleteButton);
+            return listItem;
+        }
+
+        // Supprimer un élève
+        function deleteStudent(studentName) {
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            const updatedStudents = students.filter(name => name !== studentName);
+            localStorage.setItem('students', JSON.stringify(updatedStudents));
+        }
+
+        // Charger les élèves au démarrage
+        window.onload = loadStudents;
     </script>
 </body>
 </html>

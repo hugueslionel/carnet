@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des élèves</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d3d3d3;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #eleves-container {
+            margin: 20px 0;
+        }
+        .eleve-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .eleve-name {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        .delete-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: #ff1a1a;
+        }
+        #nouvel-eleve {
+            width: calc(100% - 100px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #ajouter-eleve {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #ajouter-eleve:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des élèves</h1>
+    <div>
+        <input type="text" id="nouvel-eleve" placeholder="Nom de l'élève">
+        <button id="ajouter-eleve">Ajouter</button>
+    </div>
+    <div id="eleves-container"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const elevesContainer = document.getElementById("eleves-container");
+            const nouvelEleveInput = document.getElementById("nouvel-eleve");
+            const ajouterEleveBtn = document.getElementById("ajouter-eleve");
+
+            // Charger la liste des élèves depuis le localStorage
+            const chargerEleves = () => {
+                const eleves = JSON.parse(localStorage.getItem("eleves")) || [];
+                elevesContainer.innerHTML = "";
+
+                eleves.forEach((eleve, index) => {
+                    const eleveItem = document.createElement("div");
+                    eleveItem.className = "eleve-item";
+
+                    const eleveName = document.createElement("span");
+                    eleveName.className = "eleve-name";
+                    eleveName.textContent = eleve;
+                    eleveName.addEventListener("click", () => {
+                        window.location.href = `eleve.html?nom=${encodeURIComponent(eleve)}`;
+                    });
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "delete-button";
+                    deleteButton.textContent = "Supprimer";
+                    deleteButton.addEventListener("click", (e) => {
+                        e.stopPropagation(); // Empêche l'ouverture de la page élève lors du clic sur supprimer
+                        eleves.splice(index, 1);
+                        localStorage.setItem("eleves", JSON.stringify(eleves));
+                        chargerEleves();
+                    });
+
+                    eleveItem.appendChild(eleveName);
+                    eleveItem.appendChild(deleteButton);
+                    elevesContainer.appendChild(eleveItem);
+                });
+            };
+
+            // Ajouter un nouvel élève
+            ajouterEleveBtn.addEventListener("click", () => {
+                const nom = nouvelEleveInput.value.trim();
+                if (nom) {
+                    const eleves = JSON.parse(localStorage.getItem("eleves")) || [];
+                    eleves.push(nom);
+                    localStorage.setItem("eleves", JSON.stringify(eleves));
+                    nouvelEleveInput.value = "";
+                    chargerEleves();
+                }
+            });
+
+            chargerEleves();
+        });
+    </script>
+</body>
+</html>

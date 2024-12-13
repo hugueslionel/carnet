@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -37,6 +38,14 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        .student-item a {
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+        .student-item a:hover {
+            text-decoration: underline;
+        }
         .student-item button {
             background-color: #ff6b6b;
             color: #fff;
@@ -69,26 +78,10 @@
         .add-student button:hover {
             background-color: #45a049;
         }
-        .back-button {
-            margin-top: 20px;
-            display: block;
-            background-color: #4caf50;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 4px;
-            max-width: 150px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .back-button:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
-    <div class="container" id="mainPage">
+    <div class="container">
         <h1>Liste des élèves</h1>
         <ul class="student-list" id="studentList">
             <!-- Les noms des élèves seront ajoutés ici -->
@@ -97,11 +90,6 @@
             <input type="text" id="studentName" placeholder="Entrez un nom">
             <button onclick="addStudent()">Ajouter</button>
         </div>
-    </div>
-
-    <div class="container" id="studentPage" style="display: none;">
-        <h1 id="studentNameTitle"></h1>
-        <a href="#" class="back-button" onclick="showMainPage()">Retour à la liste</a>
     </div>
 
     <script>
@@ -116,12 +104,9 @@
             const listItem = document.createElement('li');
             listItem.className = 'student-item';
 
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = studentName;
-            nameSpan.style.cursor = 'pointer';
-            nameSpan.onclick = function () {
-                showStudentPage(studentName);
-            };
+            const nameLink = document.createElement('a');
+            nameLink.textContent = studentName;
+            nameLink.href = `eleve.html?name=${encodeURIComponent(studentName)}`;
 
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Supprimer';
@@ -129,25 +114,16 @@
                 studentList.removeChild(listItem);
             };
 
-            listItem.appendChild(nameSpan);
+            listItem.appendChild(nameLink);
             listItem.appendChild(deleteButton);
             studentList.appendChild(listItem);
 
             document.getElementById('studentName').value = '';
         }
-
-        function showStudentPage(name) {
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('studentPage').style.display = 'block';
-            document.getElementById('studentNameTitle').textContent = name;
-        }
-
-        function showMainPage() {
-            document.getElementById('mainPage').style.display = 'block';
-            document.getElementById('studentPage').style.display = 'none';
-        }
     </script>
 </body>
 </html>
+
+
 
 

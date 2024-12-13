@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Élève</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="studentName">Nom de l'élève</h1>
+        <a href="index.html" class="back-button">Retour à la liste</a>
+    </div>
+
+    <script>
+        // Récupérer le nom de l'élève depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentName = urlParams.get('name');
+
+        // Afficher le nom de l'élève dans la page
+        if (studentName) {
+            document.getElementById('studentName').textContent = studentName;
+        } else {
+            document.getElementById('studentName').textContent = "Nom de l'élève inconnu";
+        }
+    </script>
+</body>
+</html>
